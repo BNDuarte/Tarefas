@@ -133,6 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ListasAjaxController.cs" />
     <Compile Include="Controllers\ListasController.cs" />
     <Compile Include="Controllers\TarefasController.cs" />
     <Compile Include="Global.asax.cs">
@@ -152,6 +153,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\Crud\Lista\Lista.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -190,6 +192,9 @@
     <Content Include="Views\Tarefas\Delete.cshtml" />
     <Content Include="Views\Tarefas\Details.cshtml" />
     <Content Include="Views\Listas\Index.cshtml" />
+    <Content Include="Views\ListasAjax\Index.cshtml" />
+    <Content Include="Views\ListasAjax\_PartialTabelaLista.cshtml" />
+    <Content Include="Views\ListasAjax\_PartialCadEditLista.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
