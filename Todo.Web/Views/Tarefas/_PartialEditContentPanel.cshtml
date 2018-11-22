@@ -14,6 +14,7 @@
             @Html.ValidationMessageFor(model => model.IdLista, "", new { @class = "text-danger" })
         </div>
     </div>
+    <input class="form-control text-box single-line" data-val="true" data-val-date="The field Data de Cadastro must be a date." id="datepicker" name="DataCriacao" type="date" value="">
 
     <div class="form-group">
         @Html.LabelFor(model => model.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })

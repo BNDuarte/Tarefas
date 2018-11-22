@@ -2,41 +2,14 @@
 @{
     ViewBag.Title = "Lista de Tarefas";
 }
-@*<div>
-        <h4>@ViewBag.Title</h4>
-        @using (Ajax.BeginForm("Index", "ListaAjax", new AjaxOptions { HttpMethod = "Get", InsertionMode = InsertionMode.Replace, UpdateTargetId = "DivTabelaPesquisa" }))
-        {
-            @Html.Partial("~/Views/Shared/_barrapesquisadados.cshtml")
-        }
-    </div>*@
 
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Nova Lista</button><br /><br />
 
+@Html.Partial("~/Views/ListasAjax/_PartialTabelaLista.cshtml")
 
-@Html.Partial("~/Views/ListasAjax/_PartialTabelaLista.cshtml", Model)
-
-
-@Html.Partial("~/Views/ListasAjax/_PartialCadEditLista.cshtml", Model)
-
-@*@Html.Partial("~/Views/CadProduto/_avisosemregistro.cshtml", Model)
-
-
-    @Html.Partial("~/Views/CadProduto/_telacadastroproduto.cshtml")
-
-    @Html.Partial("~/Views/CadProduto/_telacadastrofoto.cshtml")
-
-    @Html.Partial("~/Views/Shared/_botaoincluir.cshtml")*@
-
-
-@Html.Hidden("Id")
+@Html.Partial("~/Views/ListasAjax/_PartialCadEditLista.cshtml")
 
 @section ScriptPage {
     <script src="~/Scripts/Crud/Lista/Lista.js"></script>
     @Scripts.Render("~/bundles/jqueryval")
 }
-
-<script>
-    var urlexclusao = '@Url.Action("Delete", "ListaAjax")';
-    var urlEdit = '@Url.Action("Edit", "ListaAjax")';
-    var urlcadastro = '@Url.Action("GravarDados", "ListaAjax")';
-    var urlgrupoproduto = '@Url.Action("GrupoProduto", "ListaAjax")';
-</script>
