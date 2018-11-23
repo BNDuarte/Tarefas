@@ -1,15 +1,18 @@
 ﻿/// <reference path="../../jquery-3.3.1.intellisense.js" />
-//Load Data in Table when documents is ready
 $(document).ready(function () {
     loadData();
     loadListas();
 });
 
 function convertDate(date) {
-    var parts = date.split(/[- :]/);
-    return date = `${parts[2]}/${parts[1]}/${parts[0]}`;
-
+    if (date != null) {
+        return new Date(parseInt(date.replace("/Date(", "").replace(")/", ""), 10));
+    }
+    else {
+        return null;
+    }
 }
+
 //Load Data function
 function loadData() {
     $.ajax({
@@ -23,8 +26,13 @@ function loadData() {
                 html += '<tr>';
                 html += '<td>' + item.Titulo + '</td>';
                 html += '<td>' + item.Descricao + '</td>';
-                html += '<td>' + new Date(item.DataCriacao) + '</td>';
-                html += '<td>' + item.Conlcuido + '</td>';
+                html += '<td>' + moment(item.DataCriacao).format('DD/MM/YYYY') + '</td>';
+                if (item.Completo) {
+                    html += "<td><span class='glyphicon glyphicon-ok-circle'></td>";
+                }
+                else {
+                    html += "<td><span class='glyphicon glyphicon-remove-circle'></td>";
+                }
                 html += '<td><a href="#" onclick="return getbyID(' + item.Id + ')">Edit</a> | <a href="#" onclick="Delele(' + item.Id + ')">Delete</a></td>';
                 html += '</tr>';
             });
@@ -111,11 +119,11 @@ function getbyID(Id) {
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
         success: function (result) {
-            $('#Id').val();
+            $('#Id').val(result.Id);
             $('#TxtTitulo').val(result.Titulo);
             $('#TxtDescricao').val(result.Descricao);
-            $('#DpkDataCriacao').val(convertDate(result.DataCriacao));
-            $('#DpkDataConclusao').val(result.DataConclusao);
+            $('#DpkDataCriacao').val(moment(convertDate(result.DataCriacao)).format('YYYY-MM-DD'));
+            $('#DpkDataConclusao').val(moment(convertDate(result.DataConclusao)).format('YYYY-MM-DD'));
             $('#chkConcluido').prop('checked', result.Conlcuido);
             $('#LstListas').val(result.IdLista);
             $('#myModal').modal('show');
