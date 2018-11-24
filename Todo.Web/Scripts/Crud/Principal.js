@@ -18,7 +18,7 @@ function loadData() {
                 html += '<tr>';
                 html += '<td>' + item.Nome + '</td>';
                 html += '<td>' + item.Observacao + '</td>';
-                html += '<td><a href="#" onclick="return getbyID(' + item.Id + ')">Editar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Deletar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Tarefas</a> </td>';
+                html += '<td><a href="#" onclick="return getbyIDLista(' + item.Id + ')">Editar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Deletar</a> | <a href="#" onclick="loadTarefas(' + item.Id + ')">Tarefas</a> </td>';
                 html += '</tr>';
             });
             $('#Listas').html(html);
@@ -28,8 +28,41 @@ function loadData() {
         }
     });
 }
+
+//Carrega Tarefas
+function loadTarefas(Id) {
+    $.ajax({
+        url: "/TarefasAjax/ObterTarefasLista/" + Id,
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            var html = '';
+            $.each(result, function (key, item) {
+                html += '<tr>';
+                html += '<td>' + item.Titulo + '</td>';
+                html += '<td>' + item.Descricao + '</td>';
+                html += '<td>' + moment(item.DataCriacao).format('DD/MM/YYYY') + '</td>';
+                if (item.Completo) {
+                    html += "<td><span class='glyphicon glyphicon-ok-circle'></td>";
+                }
+                else {
+                    html += "<td><span class='glyphicon glyphicon-remove-circle'></td>";
+                }
+                html += '<td><a href="#" onclick="return getbyID(' + item.Id + ')">Editar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Apagar</a></td>';
+                html += '</tr>';
+            });
+            $('#Tarefas').html(html);
+            $('#ModalTarefas').modal('show');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
 //Add Data Function 
-function Add() {
+function AddLista() {
     var res = validate();
     if (res === false) {
         return false;
@@ -56,7 +89,7 @@ function Add() {
 }
 
 //Function for getting the Data Based upon Employee ID
-function getbyID(Id) {
+function getbyIDLista(Id) {
     $('#TxtNome').css('border-color', 'lightgrey');
     $('#TxtObservacao').css('border-color', 'lightgrey');
     $.ajax({
@@ -80,7 +113,7 @@ function getbyID(Id) {
 }
 
 //function for updating employee's record
-function Update() {
+function UpdateLista() {
     var res = validate();
     if (res == false) {
         return false;
@@ -116,7 +149,7 @@ function Delele(Id) {
     var ans = confirm("Tem certeza que deseja deletar essa Lista de Tarefas");
     if (ans) {
         $.ajax({
-            url: "/ListasAjax/Delete/"+Id,
+            url: "/ListasAjax/Delete/" + Id,
             type: "POST",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",

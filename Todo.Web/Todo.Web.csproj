@@ -156,6 +156,7 @@
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\Crud\GerarforgeryToken.js" />
     <Content Include="Scripts\Crud\Lista\Lista.js" />
+    <Content Include="Scripts\Crud\Principal.js" />
     <Content Include="Scripts\Crud\Tarefa\Tarefa.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -212,6 +213,10 @@
     <Content Include="Views\TarefasAjax\Index.cshtml" />
     <Content Include="Views\TarefasAjax\_PartialCadEditTarefa.cshtml" />
     <Content Include="Views\TarefasAjax\_PartialTabelaTarefa.cshtml" />
+    <Content Include="Views\Home\_PartialCadEditLista.cshtml" />
+    <Content Include="Views\Home\_PartialTabelaLista.cshtml" />
+    <Content Include="Views\Home\_PartialCadEditTarefa.cshtml" />
+    <Content Include="Views\Home\_PartialTabelaTarefa.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -21,6 +21,12 @@ namespace Todo.Web.Controllers
             return Json(tarefas, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult ObterTarefasLista(int id)
+        {
+            var tarefas = _tarefaDal.ObterTarefasPorLista(id);
+            return Json(tarefas, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult ObterListas()
         {
             return Json(_listaDal.ObterListas(), JsonRequestBehavior.AllowGet);
