@@ -5,9 +5,10 @@
 
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Nova Lista</button><br /><br />
 
-@Html.Partial("~/Views/ListasAjax/_PartialTabelaLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialTabelaLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialTabelaTarefa.cshtml")
 
-@Html.Partial("~/Views/ListasAjax/_PartialCadEditLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialCadEditLista.cshtml")
 
 @section ScriptPage {
     <script src="~/Scripts/Crud/Lista/Lista.js"></script>
