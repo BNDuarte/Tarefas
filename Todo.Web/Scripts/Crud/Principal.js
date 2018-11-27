@@ -3,7 +3,46 @@
 //Load Data in Table when documents is ready
 $(document).ready(function () {
     loadData();
+    loadListas();
 });
+
+function convertDate(date) {
+    if (date != null) {
+        return new Date(parseInt(date.replace("/Date(", "").replace(")/", ""), 10));
+    }
+    else {
+        return null;
+    }
+}
+
+function loadListas(id) {
+    $.ajax({
+        url: "/TarefasAjax/ObterListas",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            if (result.length > 0) {
+                $('#LstListas option').remove();
+                $('#LstListas').append('<option value="">Escilha uma Lista</option>');
+                //Popula os options com os valores retornados em JSON
+                $.each(result, function (key, item) {
+                    $('#LstListas').append('<option value="' + item.Id + '"> ' + item.Nome + '</option>');
+                });
+                if (id > 0) {
+                    $('#LstListas').val(id);
+                }
+            }
+            else {
+                $('#LstListas option').remove();
+                $('#LstListas').append('<option value="">Selecione uma Lista</option>');
+            }
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
 
 //Load Data function
 function loadData() {
@@ -18,7 +57,7 @@ function loadData() {
                 html += '<tr>';
                 html += '<td>' + item.Nome + '</td>';
                 html += '<td>' + item.Observacao + '</td>';
-                html += '<td><a href="#" onclick="return getbyIDLista(' + item.Id + ')">Editar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Deletar</a> | <a href="#" onclick="loadTarefas(' + item.Id + ')">Tarefas</a> </td>';
+                html += '<td><a href="#" onclick="return getbyIDLista(' + item.Id + ')">Editar</a> | <a href="#" onclick="DeleleLista(' + item.Id + ')">Deletar</a> | <a href="#" onclick="loadTarefas(' + item.Id + ')">Tarefas</a> </td>';
                 html += '</tr>';
             });
             $('#Listas').html(html);
@@ -49,7 +88,7 @@ function loadTarefas(Id) {
                 else {
                     html += "<td><span class='glyphicon glyphicon-remove-circle'></td>";
                 }
-                html += '<td><a href="#" onclick="return getbyID(' + item.Id + ')">Editar</a> | <a href="#" onclick="Delele(' + item.Id + ')">Apagar</a></td>';
+                html += '<td><a href="#" onclick="return getTarefa(' + item.Id + ')">Editar</a> | <a href="#" onclick="DeleleTarefa(' + item.Id + ')">Apagar</a></td>';
                 html += '</tr>';
             });
             $('#Tarefas').html(html);
@@ -88,6 +127,37 @@ function AddLista() {
     });
 }
 
+//Add Tarefa
+function AddTarefa() {
+    var res = validate();
+    if (res === false) {
+        return false;
+    }
+    var TarefaObj = {
+        Id: $('#Id').val(),
+        Titulo: $('#TxtTitulo').val(),
+        Descricao: $('#TxtDescricao').val(),
+        DataCriacao: $('#DpkDataCriacao').val(),
+        DataConclusao: $('#DpkDataConclusao').val(),
+        Completo: $('#chkConcluido').prop('checked'),
+        IdLista: $('#LstListas').val()
+    };
+    $.ajax({
+        url: "/TarefasAjax/Create",
+        data: JSON.stringify(TarefaObj),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            loadData();
+            $('#CadTarefa').modal('hide');
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
 //Function for getting the Data Based upon Employee ID
 function getbyIDLista(Id) {
     $('#TxtNome').css('border-color', 'lightgrey');
@@ -102,8 +172,8 @@ function getbyIDLista(Id) {
             $('#TxtObservacao').val(result.Observacao);
             $('#Id').val(result.Id);
             $('#myModal').modal('show');
-            $('#btnUpdate').show();
-            $('#btnAdd').hide();
+            $('#btnUpdateLista').show();
+            $('#btnAddLista').hide();
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -112,7 +182,38 @@ function getbyIDLista(Id) {
     return false;
 }
 
-//function for updating employee's record
+function getTarefa(Id) {
+    $('#TxtTitulo').css('border-color', 'lightgrey');
+    $('#TxtDescricao').css('border-color', 'lightgrey');
+    $('#DpkDataCriacao').css('border-color', 'lightgrey');
+    $('#DpkDataConclusao').css('border-color', 'lightgrey');
+    $('#LstListas').css('border-color', 'lightgrey');
+
+    $.ajax({
+        url: "/TarefasAjax/ObterTarefaPorId/" + Id,
+        typr: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            $('#Id').val(result.Id);
+            $('#TxtTitulo').val(result.Titulo);
+            $('#TxtDescricao').val(result.Descricao);
+            $('#DpkDataCriacao').val(moment(convertDate(result.DataCriacao)).format('YYYY-MM-DD'));
+            $('#DpkDataConclusao').val(moment(convertDate(result.DataConclusao)).format('YYYY-MM-DD'));
+            $('#chkConcluido').prop('checked', result.Conlcuido);
+            $('#LstListas').val(result.IdLista);
+            $('#LstListas').prop("disabled", true);
+            $('#CadTarefa').modal('show');
+            $('#btnUpdateTarefa').show();
+            $('#btnAddTarefa').hide();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}
+
 function UpdateLista() {
     var res = validate();
     if (res == false) {
@@ -132,11 +233,38 @@ function UpdateLista() {
         success: function (result) {
             loadData();
             $('#myModal').modal('hide');
-            $('#EmployeeID').val("");
-            $('#Name').val("");
-            $('#Age').val("");
-            $('#State').val("");
-            $('#Country').val("");
+            LimpaCamposLista();
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+function UpdateTarefa() {
+    var res = validate();
+    if (res == false) {
+        return false;
+    }
+    var ListaObj = {
+        Id: $('#Id').val(),
+        Titulo: $('#TxtTitulo').val(),
+        Descricao: $('#TxtDescricao').val(),
+        DataCriacao: $('#DpkDataCriacao').val(),
+        DataConclusao: $('#DpkDataConclusao').val(),
+        Completo: $('#chkConcluido').prop('checked'),
+        IdLista: $('#LstListas').val()
+    };
+    $.ajax({
+        url: "/TarefasAjax/Edit",
+        data: JSON.stringify(ListaObj),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            loadTarefas();
+            $('#myModal').modal('hide');
+            LimpaCamposTarefa();
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -145,7 +273,7 @@ function UpdateLista() {
 }
 
 //function for deleting employee's record
-function Delele(Id) {
+function DeleleLista(Id) {
     var ans = confirm("Tem certeza que deseja deletar essa Lista de Tarefas");
     if (ans) {
         $.ajax({
@@ -163,13 +291,45 @@ function Delele(Id) {
     }
 }
 
+function DeleleTarefa(Id) {
+    var ans = confirm("Tem certeza que deseja deletar essa Tarefas");
+    if (ans) {
+        $.ajax({
+            url: "/TarefasAjax/Delete/" + Id,
+            type: "POST",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                loadTarefas();
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+}
+
 //Function for clearing the textboxes
-function clearTextBox() {
+function LimpaCamposLista() {
     $('#Id').val("");
     $('#TxtNome').val("");
     $('#TxtObservacao').val("");
-    $('#btnUpdate').hide();
-    $('#btnAdd').show();
+    $('#btnUpdateLista').hide();
+    $('#btnAddLista').show();
+    $('#TxtNome').css('border-color', 'lightgrey');
+    $('#TxtObservacao').css('border-color', 'lightgrey');
+}
+
+function LimpaCamposTarefa() {
+    $('#Id').val("");
+    $('#TxtTitulo').val("");
+    $('#TxtDescricao').val("");
+    $('#TxtDescricao').val("");
+    $('#DpkDataCriacao').val("");
+    $('#DpkDataConclusao').val("");
+    $('#chkConcluido').val("");
+    $('#btnUpdateTarefa').hide();
+    $('#btnAddTarefa').show();
     $('#TxtNome').css('border-color', 'lightgrey');
     $('#TxtObservacao').css('border-color', 'lightgrey');
 }

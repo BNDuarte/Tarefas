@@ -1,16 +1,18 @@
 ﻿@model List<ToDo.Domain.Listas.Lista>
 @{
-    ViewBag.Title = "MInhas Tarefas";
+    ViewBag.Title = "Minhas Tarefas";
 }
 <div class="row">
     <button type="button" class="btn btn-primary col-md-2" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Nova Lista</button><br /><br />
 </div>
 
-@Html.Partial("~/Views/ListasAjax/_PartialTabelaLista.cshtml")
-
-@Html.Partial("~/Views/ListasAjax/_PartialCadEditLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialTabelaLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialCadEditLista.cshtml")
+@Html.Partial("~/Views/Home/_PartialTabelaTarefa.cshtml")
+@Html.Partial("~/Views/Home/_PartialCadEditTarefa.cshtml")
 
 @section ScriptPage {
     <script src="~/Scripts/Crud/Principal.js"></script>
+    <script src="~/Scripts/moment.js"></script>
     @Scripts.Render("~/bundles/jqueryval")
 }
