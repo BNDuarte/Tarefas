@@ -129,7 +129,7 @@ function AddLista() {
 
 //Add Tarefa
 function AddTarefa() {
-    var res = validate();
+    var res = validateTarefa();
     if (res === false) {
         return false;
     }
@@ -333,6 +333,7 @@ function LimpaCamposTarefa() {
     $('#TxtNome').css('border-color', 'lightgrey');
     $('#TxtObservacao').css('border-color', 'lightgrey');
 }
+
 //Valdidation using jquery
 function validate() {
     var isValid = true;
@@ -349,6 +350,25 @@ function validate() {
     }
     else {
         $('#TxtObservacao').css('border-color', 'lightgrey');
+    }
+    return isValid;
+}
+
+function validateTarefa() {
+    var isValid = true;
+    if ($('#TxtTitulo').val().trim() == "") {
+        $('#TxtTitulo').css('border-color', 'Red');
+        isValid = false;
+    }
+    else {
+        $('#TxtTitulo').css('border-color', 'lightgrey');
+    }
+    if ($('#TxtDescricao').val().trim() == "") {
+        $('#TxtDescricao').css('border-color', 'Red');
+        isValid = false;
+    }
+    else {
+        $('#TxtDescricao').css('border-color', 'lightgrey');
     }
     return isValid;
 }
