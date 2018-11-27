@@ -3,7 +3,7 @@
 //Load Data in Table when documents is ready
 $(document).ready(function () {
     loadData();
-    loadListas();
+    
 });
 
 function convertDate(date) {
@@ -15,9 +15,9 @@ function convertDate(date) {
     }
 }
 
-function loadListas(id) {
+function loadLista(id) {
     $.ajax({
-        url: "/TarefasAjax/ObterListas",
+        url: "/Tarefas/ObterListas",
         type: "GET",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
@@ -37,6 +37,7 @@ function loadListas(id) {
                 $('#LstListas option').remove();
                 $('#LstListas').append('<option value="">Selecione uma Lista</option>');
             }
+            $('#LstListas').prop("disabled", true);
         },
         error: function (errormessage) {
             alert(errormessage.responseText);
@@ -47,7 +48,7 @@ function loadListas(id) {
 //Load Data function
 function loadData() {
     $.ajax({
-        url: "/ListasAjax/ObterListas",
+        url: "/Listas/ObterListas",
         type: "GET",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
@@ -71,12 +72,13 @@ function loadData() {
 //Carrega Tarefas
 function loadTarefas(Id) {
     $.ajax({
-        url: "/TarefasAjax/ObterTarefasLista/" + Id,
+        url: "/Tarefas/ObterTarefasLista/" + Id,
         type: "GET",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (result) {
             var html = '';
+            $('#IdLista').val(Id);
             $.each(result, function (key, item) {
                 html += '<tr>';
                 html += '<td>' + item.Titulo + '</td>';
@@ -92,6 +94,7 @@ function loadTarefas(Id) {
                 html += '</tr>';
             });
             $('#Tarefas').html(html);
+            loadLista(Id);
             $('#ModalTarefas').modal('show');
         },
         error: function (errormessage) {
@@ -112,7 +115,7 @@ function AddLista() {
         Observacao: $('#TxtObservacao').val()
     };
     $.ajax({
-        url: "/ListasAjax/Create",
+        url: "/Listas/Create",
         data: JSON.stringify(ListaObj),
         type: "POST",
         contentType: "application/json;charset=utf-8",
@@ -143,13 +146,13 @@ function AddTarefa() {
         IdLista: $('#LstListas').val()
     };
     $.ajax({
-        url: "/TarefasAjax/Create",
+        url: "/Tarefas/Create",
         data: JSON.stringify(TarefaObj),
         type: "POST",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (result) {
-            loadData();
+            loadTarefas($('#IdLista').val());
             $('#CadTarefa').modal('hide');
         },
         error: function (errormessage) {
@@ -163,7 +166,7 @@ function getbyIDLista(Id) {
     $('#TxtNome').css('border-color', 'lightgrey');
     $('#TxtObservacao').css('border-color', 'lightgrey');
     $.ajax({
-        url: "/ListasAjax/ObterListarPorId/" + Id,
+        url: "/Listas/ObterListarPorId/" + Id,
         typr: "GET",
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
@@ -190,7 +193,7 @@ function getTarefa(Id) {
     $('#LstListas').css('border-color', 'lightgrey');
 
     $.ajax({
-        url: "/TarefasAjax/ObterTarefaPorId/" + Id,
+        url: "/Tarefas/ObterTarefaPorId/" + Id,
         typr: "GET",
         contentType: "application/json;charset=UTF-8",
         dataType: "json",
@@ -225,7 +228,7 @@ function UpdateLista() {
         Observacao: $('#TxtObservacao').val()
     };
     $.ajax({
-        url: "/ListasAjax/Edit",
+        url: "/Listas/Edit",
         data: JSON.stringify(ListaObj),
         type: "POST",
         contentType: "application/json;charset=utf-8",
@@ -242,7 +245,7 @@ function UpdateLista() {
 }
 
 function UpdateTarefa() {
-    var res = validate();
+    var res = validateTarefa();
     if (res == false) {
         return false;
     }
@@ -256,14 +259,14 @@ function UpdateTarefa() {
         IdLista: $('#LstListas').val()
     };
     $.ajax({
-        url: "/TarefasAjax/Edit",
+        url: "/Tarefas/Edit",
         data: JSON.stringify(ListaObj),
         type: "POST",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (result) {
-            loadTarefas();
-            $('#myModal').modal('hide');
+            loadTarefas($('#LstListas').val());
+            $('#CadTarefa').modal('hide');
             LimpaCamposTarefa();
         },
         error: function (errormessage) {
@@ -277,7 +280,7 @@ function DeleleLista(Id) {
     var ans = confirm("Tem certeza que deseja deletar essa Lista de Tarefas");
     if (ans) {
         $.ajax({
-            url: "/ListasAjax/Delete/" + Id,
+            url: "/Listas/Delete/" + Id,
             type: "POST",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
@@ -295,12 +298,12 @@ function DeleleTarefa(Id) {
     var ans = confirm("Tem certeza que deseja deletar essa Tarefas");
     if (ans) {
         $.ajax({
-            url: "/TarefasAjax/Delete/" + Id,
+            url: "/Tarefas/Delete/" + Id,
             type: "POST",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
             success: function (result) {
-                loadTarefas();
+                loadTarefas($('#IdLista').val());
             },
             error: function (errormessage) {
                 alert(errormessage.responseText);

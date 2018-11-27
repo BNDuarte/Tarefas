@@ -133,9 +133,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ListasAjaxController.cs" />
     <Compile Include="Controllers\ListasController.cs" />
-    <Compile Include="Controllers\TarefasAjaxController.cs" />
     <Compile Include="Controllers\TarefasController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -154,10 +152,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\Crud\GerarforgeryToken.js" />
-    <Content Include="Scripts\Crud\Lista\Lista.js" />
     <Content Include="Scripts\Crud\Principal.js" />
-    <Content Include="Scripts\Crud\Tarefa\Tarefa.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -193,26 +188,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Listas\_PartialDetailsContentPanel.cshtml" />
-    <Content Include="Views\Listas\_PartialEditContentPanel.cshtml" />
-    <Content Include="Views\Listas\Create.cshtml" />
-    <Content Include="Views\Listas\Delete.cshtml" />
-    <Content Include="Views\Listas\Details.cshtml" />
-    <Content Include="Views\Listas\Edit.cshtml" />
-    <Content Include="Views\Tarefas\Index.cshtml" />
-    <Content Include="Views\Tarefas\_PartialDetailsContentPanel.cshtml" />
-    <Content Include="Views\Tarefas\_PartialEditContentPanel.cshtml" />
-    <Content Include="Views\Tarefas\Create.cshtml" />
-    <Content Include="Views\Tarefas\Edit.cshtml" />
-    <Content Include="Views\Tarefas\Delete.cshtml" />
-    <Content Include="Views\Tarefas\Details.cshtml" />
-    <Content Include="Views\Listas\Index.cshtml" />
-    <Content Include="Views\ListasAjax\Index.cshtml" />
-    <Content Include="Views\ListasAjax\_PartialTabelaLista.cshtml" />
-    <Content Include="Views\ListasAjax\_PartialCadEditLista.cshtml" />
-    <Content Include="Views\TarefasAjax\Index.cshtml" />
-    <Content Include="Views\TarefasAjax\_PartialCadEditTarefa.cshtml" />
-    <Content Include="Views\TarefasAjax\_PartialTabelaTarefa.cshtml" />
     <Content Include="Views\Home\_PartialCadEditLista.cshtml" />
     <Content Include="Views\Home\_PartialTabelaLista.cshtml" />
     <Content Include="Views\Home\_PartialCadEditTarefa.cshtml" />

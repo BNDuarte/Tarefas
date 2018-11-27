@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using ToDo.Data.DAL;
 using ToDo.Domain.Tarefas;
 
@@ -9,104 +7,57 @@ namespace Todo.Web.Controllers
     public class TarefasController : Controller
     {
         private TarefaDAL _tarefaDal = new TarefaDAL();
-        private ListaDAL _listaDAL = new ListaDAL();
-        // GET: Tarefas
+        private ListaDAL _listaDal = new ListaDAL();
+
         public ActionResult Index()
         {
-            return View(_tarefaDal.ObterTarefas());
+            return View();
         }
 
-        public ActionResult Create()
+        public JsonResult ObterTarefas()
         {
-            PopularViewBag();
-            return View(new Tarefa());
+            var tarefas = _tarefaDal.ObterTarefas();
+            return Json(tarefas, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public ActionResult Create(Tarefa tarefa)
+        public JsonResult ObterTarefasLista(int id)
         {
-            return GravarTarefa(tarefa);
+            var tarefas = _tarefaDal.ObterTarefasPorLista(id);
+            return Json(tarefas, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Edit(int? id)
+        public JsonResult ObterListas()
         {
-            PopularViewBag(_tarefaDal.ObterTarefaPorId(id));
-            return ObterTarefaPorId(id);
-        }
-
-        [HttpPost]
-        public ActionResult Edit(Tarefa tarefa)
-        {
-            return GravarTarefa(tarefa);
-        }
-
-        public ActionResult Details(int? id)
-        {
-            PopularViewBag(_tarefaDal.ObterTarefaPorId(id));
-            return ObterTarefaPorId(id);
-        }
-
-        public ActionResult Delete(int? id)
-        {
-            return ObterTarefaPorId(id);
+            return Json(_listaDal.ObterListas(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public JsonResult Create(Tarefa tarefa)
         {
-            try
-            {
-                Tarefa tarefa = _tarefaDal.Deletar(id);
-                TempData["Message"] = "Lista " + tarefa.Titulo.ToUpper() + " foi removida";
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _tarefaDal.GravarTarefa(tarefa);
+            return Json("ok", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GravarTarefa(Tarefa tarefa)
+        [HttpPost]
+        public JsonResult Edit(Tarefa tarefa)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _tarefaDal.GravarTarefa(tarefa);
-                    return RedirectToAction("Index");
-                }
-                return View(tarefa);
-            }
-            catch (Exception ex)
-            {
-                return View(tarefa);
-            }
+            _tarefaDal.GravarTarefa(tarefa);
+            return Json("ok", JsonRequestBehavior.AllowGet);
         }
 
-        private ActionResult ObterTarefaPorId(int? id)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            Tarefa tarefa = _tarefaDal.Deletar(id);
+            return Json("Ok", JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ObterTarefaPorId(int? id)
+        {
             Tarefa tarefa = _tarefaDal.ObterTarefaPorId(id);
-            if (tarefa == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tarefa);
-        }
-
-        private void PopularViewBag(Tarefa tarefa = null)
-        {
-            if (tarefa == null)
-            {
-                ViewBag.ListaId = new SelectList(_listaDAL.ObterListasPorNome(), "Id", "Nome");
-            }
-            else
-            {
-                ViewBag.ListaId = new SelectList(_listaDAL.ObterListasPorNome(), "Id", "Nome", tarefa.Id);
-            }
+            JsonResult jsonResult = Json(tarefa, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
     }
 }

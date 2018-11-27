@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using ToDo.Data.DAL;
 using ToDo.Domain.Listas;
 
@@ -10,88 +8,43 @@ namespace Todo.Web.Controllers
     {
         private ListaDAL _listaDal = new ListaDAL();
 
-        // GET: Tarefas
         public ActionResult Index()
         {
-            return View(_listaDal.ObterListas());
+            return View();
         }
 
-        public ActionResult Create()
+        public JsonResult ObterListas()
         {
-            return View(new Lista());
-        }
-
-        [HttpPost]
-        public ActionResult Create(Lista lista)
-        {
-            return GravarLista(lista);
-        }
-
-        public ActionResult Edit(int? id)
-        {
-            return ObterListarPorId(id);
+            return Json(_listaDal.ObterListas(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Edit(Lista lista)
+        public JsonResult Create(Lista lista)
         {
-            return GravarLista(lista);
-        }
-
-        public ActionResult Details(int? id)
-        {
-            return ObterListarPorId(id);
-        }
-
-        public ActionResult Delete(int? id)
-        {
-            return ObterListarPorId(id);
+            _listaDal.GravarLista(lista);
+            return Json("ok",JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public JsonResult Edit(Lista lista)
         {
-            try
-            {
-                Lista lista = _listaDal.Deletar(id);
-                TempData["Message"] = "Lista " + lista.Nome.ToUpper() + " foi removida";
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _listaDal.GravarLista(lista);
+            return Json("ok", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GravarLista(Lista lista)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _listaDal.GravarLista(lista);
-                    return RedirectToAction("Index");
-                }
-                return View(lista);
-            }
-            catch (Exception ex)
-            {
-                return View(lista);
-            }
+            Lista lista = _listaDal.Deletar(id);
+            return Json("Ok", JsonRequestBehavior.AllowGet);
         }
 
-        private ActionResult ObterListarPorId(int? id)
+        public JsonResult ObterListarPorId(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Lista lista = _listaDal.ObterListaPorId(id);
-            if (lista == null)
-            {
-                return HttpNotFound();
-            }
-            return View(lista);
+            JsonResult jsonResult = Json(lista, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
     }
 }
